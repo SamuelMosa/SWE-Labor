@@ -1,6 +1,10 @@
 package artcreator.creator;
 
 import artcreator.creator.impl.CreatorImpl;
+import artcreator.creator.impl.Image;
+import artcreator.creator.impl.Profile;
+import artcreator.creator.impl.Settings;
+import artcreator.creator.impl.Template;
 import artcreator.creator.port.Creator;
 import artcreator.domain.DomainFactory;
 import artcreator.statemachine.StateMachineFactory;
@@ -25,6 +29,48 @@ public class CreatorFacade implements CreatorFactory, Creator {
 	public synchronized void sysop(String str) {
 		if (this.stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE /* choose right state*/ ))
 			this.creator.sysop(str);
+	}
+
+	@Override
+	public void importImage(String filePathFirstImage, String filePathSecondImage) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void switchPictureOrder() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Profile loadProfile(int profileID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int calculateColorID(String colorValue) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void saveProfile(Profile profile) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Template generateTemplate(Image leftImage, Image rightImage, Settings settings) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void saveTemplate(Template template) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
