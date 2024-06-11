@@ -1,5 +1,9 @@
 package artcreator.creator.impl;
 
-public class Profile {
+import artcreator.creator.impl.Settings;
 
+public class Profile {
+	private int profileID;
+	private String profileName;
+	private Settings profileSettings;
 }
