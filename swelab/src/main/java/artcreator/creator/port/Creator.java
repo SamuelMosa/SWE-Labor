@@ -1,8 +1,8 @@
 package artcreator.creator.port;
 
-import artcreator.creator.impl.Profile;
 import artcreator.creator.impl.Template;
 import artcreator.creator.impl.Image;
+import artcreator.creator.impl.Profile;
 import artcreator.creator.impl.Settings;
 
 public interface Creator {
