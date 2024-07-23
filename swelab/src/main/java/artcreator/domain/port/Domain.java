@@ -1,13 +1,19 @@
 package artcreator.domain.port;
 
+import java.io.IOException;
+import java.util.List;
 
-/* Factory for creating domain objects */ 
+import artcreator.creator.impl.Profile;
+
+/* Factory for creating domain objects */
 
 public interface Domain {
 	
-	
+	void saveProfiles(List<Profile> profiles) throws IOException;
 
-	/* Factory methods */ 
+	List<Profile> loadProfiles() throws IOException;
+
+	/* Factory methods */
 	Object mkObject();
 
 }

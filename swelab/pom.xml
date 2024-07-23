@@ -27,12 +27,17 @@
 			<artifactId>maven-clean-plugin</artifactId>
 			<version>3.3.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.12.5</version>
+		</dependency>
 
 	</dependencies>
 
 	<build>
 		<plugins>
-		
+
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

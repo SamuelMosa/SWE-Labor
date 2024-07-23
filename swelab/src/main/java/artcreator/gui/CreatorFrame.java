@@ -45,7 +45,7 @@ public class CreatorFrame extends JFrame implements Observer {
 		this.getContentPane().add(this.panel);
 
 		CreatorImpl impl = new CreatorImpl(null, null);
-		BufferedImage[] images = impl.importImage("C:/Users/ninoo/Downloads/WhatsApp Image 2024-06-11 at 15.56.43.jpeg", null);
+		BufferedImage[] images = impl.importImage("/Users/martinmergili/Documents/SWELab/442C7AF200000578-0-image-a-65_1505779434657.jpg", null);
 		
 		this.panel.add(this.label);
 		this.label.setIcon(new ImageIcon(images[0]));

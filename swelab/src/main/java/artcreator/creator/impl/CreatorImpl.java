@@ -2,18 +2,25 @@ package artcreator.creator.impl;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import artcreator.creator.impl.Image;
+import artcreator.creator.port.ProfileService;
 import artcreator.domain.port.Domain;
 import artcreator.statemachine.port.StateMachine;
 
 public class CreatorImpl {
+	private StateMachine stateMachine;
+    private Domain domain;
+    private ProfileService profileService;
 
 	public CreatorImpl(StateMachine stateMachine, Domain domain) {
-		// TODO Auto-generated constructor stub
-	}
+        this.stateMachine = stateMachine;
+        this.domain = domain;
+        this.profileService = new ProfileServiceImpl(); // Idealerweise Dependency Injection verwenden
+    }
 
 	public void sysop(String str) {
 		System.out.println(str);
@@ -61,19 +68,25 @@ public class CreatorImpl {
 	}
 
 	public Profile loadProfile(int profileID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        List<Profile> profiles = profileService.loadProfiles();
+        for (Profile profile : profiles) {
+            if (profile.getId() == profileID) {
+                return profile;
+            }
+        }
+        return null; // oder eine Ausnahme werfen, wenn das Profil nicht gefunden wird
+    }
 
 	public int calculateColorID(String colorValue) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public void saveProfile(Profile profile) {
-		// TODO Auto-generated method stub
-
-	}
+	public void saveProfile(Profile profile) throws IOException {
+        List<Profile> profiles = profileService.loadProfiles();
+        profiles.add(profile);
+        profileService.saveProfiles(profiles);
+    }
 
 	public Template generateTemplate(Image leftImage, Image rightImage, Settings settings) {
 		// TODO Auto-generated method stub
