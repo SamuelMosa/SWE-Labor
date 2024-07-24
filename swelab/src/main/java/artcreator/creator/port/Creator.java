@@ -1,7 +1,9 @@
 package artcreator.creator.port;
 
 import artcreator.creator.impl.Template;
-import artcreator.creator.impl.Image;
+
+import java.awt.image.BufferedImage;
+
 import artcreator.creator.impl.Profile;
 import artcreator.creator.impl.Settings;
 
@@ -19,7 +21,7 @@ public interface Creator {
 	
 	void saveProfile(Profile profile);
 	
-	Template generateTemplate(Image leftImage, Image rightImage, Settings settings);
+	Template generateTemplate(BufferedImage leftImage, BufferedImage rightImage, Settings settings);
 	
 	void saveTemplate(Template template);
 	

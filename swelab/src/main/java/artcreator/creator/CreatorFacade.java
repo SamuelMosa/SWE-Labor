@@ -1,7 +1,8 @@
 package artcreator.creator;
 
+import java.awt.image.BufferedImage;
+
 import artcreator.creator.impl.CreatorImpl;
-import artcreator.creator.impl.Image;
 import artcreator.creator.impl.Profile;
 import artcreator.creator.impl.Settings;
 import artcreator.creator.impl.Template;
@@ -62,7 +63,7 @@ public class CreatorFacade implements CreatorFactory, Creator {
 	}
 
 	@Override
-	public Template generateTemplate(Image leftImage, Image rightImage, Settings settings) {
+	public Template generateTemplate(BufferedImage leftImage, BufferedImage rightImage, Settings settings) {
 		// TODO Auto-generated method stub
 		return null;
 	}

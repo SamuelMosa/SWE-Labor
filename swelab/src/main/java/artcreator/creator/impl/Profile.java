@@ -5,7 +5,7 @@ import artcreator.creator.impl.Settings;
 public class Profile {
 	private int id;
 	private String name;
-	private Settings settings;
+	public Settings settings;
 	
 	public Profile() {}
 	

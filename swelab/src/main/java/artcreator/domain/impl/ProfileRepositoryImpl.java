@@ -19,6 +19,9 @@ public class ProfileRepositoryImpl implements ProfileRepository {
 
 	@Override
 	public void saveProfiles(List<Profile> profiles) throws IOException {
+		for(int i = 0; i<profiles.size()-1; i++) {
+   			System.out.println(profiles.get(i).settings.getColorPalette());
+   		}
 		objectMapper.writeValue(new File(FILE_PATH), profiles);
 	}
 
