@@ -35,8 +35,7 @@ public class Main {
 		settings_0.insertColor("#FFFFFF");
 
 		
-		BufferedImage[] images = impl.importImage("/Users/martinmergili/Documents/SWELab/360_F_125419626_rmKWQ2dAlRMXM6lvqHTj0o1xeU5neMtM.jpg", 
-				"/Users/martinmergili/Documents/SWELab/442C7AF200000578-0-image-a-65_1505779434657.jpg");
+		BufferedImage[] images = impl.importImage("C:/Users/ninoo/git/istockphoto-1271087162-612x612.jpg", "C:/Users/ninoo/git/istockphoto-1271087162-612x612.jpg");
 		
 		impl.generateTemplate( images[0], images[1], settings_0);
 

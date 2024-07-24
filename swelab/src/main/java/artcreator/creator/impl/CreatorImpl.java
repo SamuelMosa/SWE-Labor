@@ -97,22 +97,22 @@ public class CreatorImpl {
 	}
 
 	public Template generateTemplate(BufferedImage images, BufferedImage images2, Settings settings) {
-		
-        // Convert hexadecimal colors to Color objects
-        List<Color> colorList = new ArrayList<>();
-        for (String hex : settings.getColorPalette()) {
-            colorList.add(Color.decode(hex));
-        }
-        
-	     // Specify the dimensions of the mosaic
-        int mosaicWidth = (int) Math.sqrt(settings.getNumToothpicks());
-        int mosaicHeight = mosaicWidth;
 
-        // Create the mosaic image
-        BufferedImage mosaicImage = createMosaicImage(images, mosaicWidth, mosaicHeight, colorList);
+		// Convert hexadecimal colors to Color objects
+		List<Color> colorList = new ArrayList<>();
+		for (String hex : settings.getColorPalette()) {
+			colorList.add(Color.decode(hex));
+		}
 
-        // Display the mosaic image with circles in a JFrame
-        displayMosaicCircles(mosaicImage, 20, 10); // Circle diameter and spacing
+		// Specify the dimensions of the mosaic
+		int mosaicWidth = (int) Math.sqrt(settings.getNumToothpicks());
+		int mosaicHeight = mosaicWidth;
+
+		// Create the mosaic image
+		BufferedImage mosaicImage = createMosaicImage(images, mosaicWidth, mosaicHeight, colorList);
+
+		// Display the mosaic image with circles in a JFrame
+		displayMosaicCircles(mosaicImage, 20, 10, settings); // Circle diameter and spacing
 		return null;
 	}
 
@@ -120,112 +120,114 @@ public class CreatorImpl {
 		// TODO Auto-generated method stub
 
 	}
-	
-	private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight, List<Color> colorList) {
+
+	private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight,
+			List<Color> colorList) {
 		int width = originalImage.getWidth();
-        int height = originalImage.getHeight();
+		int height = originalImage.getHeight();
 
-        // Create a new image with the reduced dimensions
-        BufferedImage scaledImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
+		// Create a new image with the reduced dimensions
+		BufferedImage scaledImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
 
-        // Scale down the original image to the new dimensions
-        Graphics2D g2d = scaledImage.createGraphics();
-        g2d.drawImage(originalImage, 0, 0, mosaicWidth, mosaicHeight, null);
-        g2d.dispose();
+		// Scale down the original image to the new dimensions
+		Graphics2D g2d = scaledImage.createGraphics();
+		g2d.drawImage(originalImage, 0, 0, mosaicWidth, mosaicHeight, null);
+		g2d.dispose();
 
-        // Create a new image for the mosaic with closest colors
-        BufferedImage mosaicImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
+		// Create a new image for the mosaic with closest colors
+		BufferedImage mosaicImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
 
-        for (int y = 0; y < mosaicHeight; y++) {
-            for (int x = 0; x < mosaicWidth; x++) {
-                // Get the color of the current pixel
-                int pixelColor = scaledImage.getRGB(x, y);
-                Color pixel = new Color(pixelColor, true);
+		for (int y = 0; y < mosaicHeight; y++) {
+			for (int x = 0; x < mosaicWidth; x++) {
+				// Get the color of the current pixel
+				int pixelColor = scaledImage.getRGB(x, y);
+				Color pixel = new Color(pixelColor, true);
 
-                // Find the closest color from the list
-                Color closestColor = findClosestColor(pixel, colorList);
+				// Find the closest color from the list
+				Color closestColor = findClosestColor(pixel, colorList);
 
-                // Set the color in the mosaic image
-                mosaicImage.setRGB(x, y, closestColor.getRGB());
-            }
-        }
+				// Set the color in the mosaic image
+				mosaicImage.setRGB(x, y, closestColor.getRGB());
+			}
+		}
 
-        return mosaicImage;
-    }
-	
+		return mosaicImage;
+	}
+
 	private static Color findClosestColor(Color color, List<Color> colorList) {
-        Color closestColor = null;
-        int minDistance = Integer.MAX_VALUE;
+		Color closestColor = null;
+		int minDistance = Integer.MAX_VALUE;
 
-        for (Color candidate : colorList) {
-            int distance = colorDistance(color, candidate);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestColor = candidate;
-            }
-        }
+		for (Color candidate : colorList) {
+			int distance = colorDistance(color, candidate);
+			if (distance < minDistance) {
+				minDistance = distance;
+				closestColor = candidate;
+			}
+		}
 
-        return closestColor;
-    }
+		return closestColor;
+	}
 
-    private static int colorDistance(Color color1, Color color2) {
-        int rDiff = color1.getRed() - color2.getRed();
-        int gDiff = color1.getGreen() - color2.getGreen();
-        int bDiff = color1.getBlue() - color2.getBlue();
-        return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
-    }
+	private static int colorDistance(Color color1, Color color2) {
+		int rDiff = color1.getRed() - color2.getRed();
+		int gDiff = color1.getGreen() - color2.getGreen();
+		int bDiff = color1.getBlue() - color2.getBlue();
+		return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
+	}
 
-    private static void displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing) {
-        // Calculate the size needed for the JFrame
-        int mosaicWidth = mosaicImage.getWidth();
-        int mosaicHeight = mosaicImage.getHeight();
-        int totalWidth = mosaicWidth * (circleDiameter + spacing) - spacing;
-        int totalHeight = mosaicHeight * (circleDiameter + spacing) - spacing;
+	private static void displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
+			Settings setting) {
+		// Calculate the size needed for the JFrame
+		int mosaicWidth = mosaicImage.getWidth();
+		int mosaicHeight = mosaicImage.getHeight();
+		int totalWidth = mosaicWidth * (circleDiameter + spacing) - spacing;
+		int totalHeight = mosaicHeight * (circleDiameter + spacing) - spacing;
 
-        // Create a custom JPanel to display the image with circles
-        JPanel panel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                drawMosaicCircles(g, mosaicImage, circleDiameter, spacing);
-            }
-        };
+		// Create a custom JPanel to display the image with circles
+		JPanel panel = new JPanel() {
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				drawMosaicCircles(g, mosaicImage, circleDiameter, spacing, setting);
+			}
+		};
 
-        // Create a JFrame to hold the JPanel
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(panel);
-        frame.setSize(totalWidth, totalHeight);
-        frame.setVisible(true);
-    }
+		// Create a JFrame to hold the JPanel
+		JFrame frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(panel);
+		frame.setSize(totalWidth, totalHeight);
+		frame.setVisible(true);
+	}
 
-    private static void drawMosaicCircles(Graphics g, BufferedImage mosaicImage, int circleDiameter, int spacing) {
-        Graphics2D g2d = (Graphics2D) g;
+	private static void drawMosaicCircles(Graphics g, BufferedImage mosaicImage, int circleDiameter, int spacing,
+			Settings settings) {
+		Graphics2D g2d = (Graphics2D) g;
 
-        int mosaicWidth = mosaicImage.getWidth();
-        int mosaicHeight = mosaicImage.getHeight();
+		int mosaicWidth = mosaicImage.getWidth();
+		int mosaicHeight = mosaicImage.getHeight();
 
-        for (int y = 0; y < mosaicHeight; y++) {
-            for (int x = 0; x < mosaicWidth; x++) {
-                // Get the color of the current pixel
-                int pixelColor = mosaicImage.getRGB(x, y);
-                Color color = new Color(pixelColor);
+		for (int y = 0; y < mosaicHeight; y++) {
+			for (int x = 0; x < mosaicWidth; x++) {
+				int pixelColor = mosaicImage.getRGB(x, y);
+				Color color = new Color(pixelColor);
 
-                // Calculate the position for the circle
-                int drawX = x * (circleDiameter + spacing);
-                int drawY = y * (circleDiameter + spacing);
+				int drawX = x * (circleDiameter + spacing);
+				int drawY = y * (circleDiameter + spacing);
 
-                // Set the color and draw the circle
-                g2d.setColor(color);
-                g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
-                
-             // Draw the number in the center of the circle
-                g2d.setColor(Color.BLACK); // Color for the text
-                int textWidth = g2d.getFontMetrics().stringWidth("1");
-                int textHeight = g2d.getFontMetrics().getHeight();
-                g2d.drawString("1", drawX + (circleDiameter - textWidth) / 2, drawY + (circleDiameter + textHeight) / 2 - 5);
-            }
-        }
-    }
+				g2d.setColor(color);
+				g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
+
+				int colorID = settings.getColorId(color);
+				g2d.setColor(Color.BLACK);
+				String idText = String.valueOf(colorID);
+				int textWidth = g2d.getFontMetrics().stringWidth(idText);
+				int textHeight = g2d.getFontMetrics().getHeight();
+				g2d.drawString(idText, drawX + (circleDiameter - textWidth) / 2,
+						drawY + (circleDiameter + textHeight) / 2 - 5);
+			}
+		}
+	}
 
 }
