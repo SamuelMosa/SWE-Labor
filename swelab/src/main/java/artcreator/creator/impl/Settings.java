@@ -1,5 +1,6 @@
 package artcreator.creator.impl;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -20,6 +21,15 @@ public class Settings {
 		this.toothpickDistance = toothpickDistance;
 		this.numToothpicks = numToothpicks;
 		this.colorPalette = new ArrayList<>();
+	}
+	
+	public int getColorId(Color color) {
+	    for (int i = 0; i < colorPalette.size(); i++) {
+	        if (Color.decode(colorPalette.get(i)).equals(color)) {
+	            return i;
+	        }
+	    }
+	    return -1; // falls die Farbe nicht gefunden wurde
 	}
 
 	public float getToothpickDistance() {
