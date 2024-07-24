@@ -69,8 +69,10 @@ public class CreatorImpl {
 
 	}
 
-	public void switchPictureOrder() {
-		// TODO Auto-generated method stub
+	public void switchPictureOrder(BufferedImage[] twoImages) {
+		BufferedImage firstImage = twoImages[0];
+		twoImages[0] = twoImages[1];
+		twoImages[1] = firstImage;
 	}
 
 	public Profile loadProfile(int profileID) {
