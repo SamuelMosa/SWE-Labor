@@ -1,11 +1,14 @@
 package artcreator.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -24,6 +27,7 @@ import javax.swing.WindowConstants;
 import artcreator.creator.CreatorFactory;
 import artcreator.creator.impl.CreatorImpl;
 import artcreator.creator.impl.Settings;
+import artcreator.creator.impl.Template;
 import artcreator.creator.port.Creator;
 import artcreator.statemachine.StateMachineFactory;
 import artcreator.statemachine.port.Observer;
@@ -46,6 +50,7 @@ public class CreatorFrame extends JFrame implements Observer {
 	private JTextField distanceToothpickTextField;
 	private JTextField numberToothpicksTextField;
 	private Settings settings = new Settings();
+	private BufferedImage[] importedImages;
 	
     public CreatorFrame() {
         super("ArtCreator");
@@ -75,7 +80,9 @@ public class CreatorFrame extends JFrame implements Observer {
         	createSettingsView();
         } else if(newState.equals(State.S.SETTINGS_DONE)) {
         	createTemplateView();
-        }
+        } else if(newState.equals(State.S.TEMPLATE_GENERATED)) {
+        	createGenerateTemplateView();
+        };
     }
 
     private void createStartScreenView() {
@@ -150,7 +157,7 @@ public class CreatorFrame extends JFrame implements Observer {
         this.panel.add(settingsButton);
         
 		CreatorImpl impl = new CreatorImpl(null, null);
-		impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
+		importedImages = impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
 
         this.getContentPane().add(this.panel);
 
@@ -275,13 +282,55 @@ public class CreatorFrame extends JFrame implements Observer {
         // Generate Button
         JButton generateButton = new JButton("Vorlage generieren");
         generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        generateButton.addActionListener(controller); // Assuming controller handles button actions
+        GenerateTemplateController generateTemplateController = new GenerateTemplateController(this, subject, creator);
+        generateButton.addActionListener(generateTemplateController); // Assuming controller handles button actions
         panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         panel.add(generateButton);
         
         // Füge das Panel zum Content Pane hinzu
         getContentPane().add(panel);
         
+        repaintView();
+    }
+    
+    private void createGenerateTemplateView() {
+        clearContent();
+        CreatorImpl creatorImpl = new CreatorImpl(null, null);
+		BufferedImage[] images = creatorImpl.importImage("C:/Users/ninoo/git/SWE-Labor/swelab/istockphoto-1271087162-612x612.jpg", "C:/Users/ninoo/git/SWE-Labor/swelab/istockphoto-1271087162-612x612.jpg");
+
+        Template template = creatorImpl.generateTemplate(images[0], images[0], settings);
+
+        this.panel.setLayout(new BorderLayout());
+
+        JLabel titleLabel = new JLabel("Vorlage - Linksbild", SwingConstants.CENTER);
+        this.panel.add(titleLabel, BorderLayout.NORTH);
+
+        JLabel imageLabel = new JLabel();
+        imageLabel.setIcon(new ImageIcon(template.getImage()));
+//        imageLabel.setPreferredSize(new Dimension(400, 300));
+        imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.panel.add(imageLabel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
+
+        JButton discardButton = new JButton("Vorlage verwerfen");
+        buttonPanel.add(discardButton);
+
+        JButton saveButton = new JButton("Vorlage speichern");
+        buttonPanel.add(saveButton);
+
+        JButton printButton = new JButton("Vorlage drucken");
+        buttonPanel.add(printButton);
+
+        this.panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        JButton switchToRightButton = new JButton("Zum Rechtsbild");
+        switchToRightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.panel.add(switchToRightButton, BorderLayout.CENTER);
+
+        this.getContentPane().add(this.panel);
+
         repaintView();
     }
     

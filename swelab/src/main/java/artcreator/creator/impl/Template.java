@@ -1,5 +1,15 @@
 package artcreator.creator.impl;
 
-public class Template {
+import java.awt.image.BufferedImage;
 
+public class Template {
+	private BufferedImage image;
+	
+	public Template(BufferedImage image) {
+		this.image = image;
+	};
+	
+	public BufferedImage getImage( ) {
+		return image;
+	}
 }

@@ -22,14 +22,14 @@ public class CreatorImpl {
 	private StateMachine stateMachine;
 	private Domain domain;
 	private ProfileService profileService;
-	
+
 	private String leftImageFilePath;
 	private String rightImageFilePath;
 
 	public CreatorImpl(StateMachine stateMachine, Domain domain) {
 		this.stateMachine = stateMachine;
 		this.domain = domain;
-		this.profileService = new ProfileServiceImpl(); 
+		this.profileService = new ProfileServiceImpl();
 	}
 
 	public void sysop(String str) {
@@ -113,14 +113,21 @@ public class CreatorImpl {
 		// Create the mosaic image
 		BufferedImage mosaicImage = createMosaicImage(images, mosaicWidth, mosaicHeight, colorList);
 
-		// Display the mosaic image with circles in a JFrame
-		displayMosaicCircles(mosaicImage, 20, 10, settings); // Circle diameter and spacing
-		return null;
+		// Prepare the Graphics2D object
+		BufferedImage canvas = new BufferedImage(mosaicImage.getWidth(), mosaicImage.getHeight(),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = canvas.createGraphics();
+
+		// Display the mosaic image with circles
+		displayMosaicCircles(g2d, mosaicImage, 20, 10, settings); // Circle diameter and spacing
+		g2d.dispose();
+		System.out.println("Template generated");
+
+		return new Template(canvas); // Return a suitable Template object instead of null
 	}
 
 	public void saveTemplate(Template template) {
 		// TODO Auto-generated method stub
-
 	}
 
 	private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight,
@@ -178,7 +185,46 @@ public class CreatorImpl {
 		return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
 	}
 
-	private static Graphics2D displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
+	private static void displayMosaicCircles(Graphics2D g2d, BufferedImage mosaicImage, int circleDiameter, int spacing,
+			Settings settings) {
+		// Calculate the size needed for the JFrame
+		int mosaicWidth = mosaicImage.getWidth();
+		int mosaicHeight = mosaicImage.getHeight();
+		int totalWidth = mosaicWidth * (circleDiameter + spacing) - spacing;
+		int totalHeight = mosaicHeight * (circleDiameter + spacing) - spacing;
+
+		// Draw the mosaic with circles on the Graphics2D object
+		drawMosaicCircles(g2d, mosaicImage, circleDiameter, spacing, settings);
+	}
+
+	private static void drawMosaicCircles(Graphics2D g2d, BufferedImage mosaicImage, int circleDiameter, int spacing,
+			Settings settings) {
+		int mosaicWidth = mosaicImage.getWidth();
+		int mosaicHeight = mosaicImage.getHeight();
+
+		for (int y = 0; y < mosaicHeight; y++) {
+			for (int x = 0; x < mosaicWidth; x++) {
+				int pixelColor = mosaicImage.getRGB(x, y);
+				Color color = new Color(pixelColor);
+
+				int drawX = x * (circleDiameter + spacing);
+				int drawY = y * (circleDiameter + spacing);
+
+				g2d.setColor(color);
+				g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
+
+				int colorID = settings.getColorId(color);
+				g2d.setColor(Color.BLACK);
+				String idText = String.valueOf(colorID);
+				int textWidth = g2d.getFontMetrics().stringWidth(idText);
+				int textHeight = g2d.getFontMetrics().getHeight();
+				g2d.drawString(idText, drawX + (circleDiameter - textWidth) / 2,
+						drawY + (circleDiameter + textHeight) / 2 - 5);
+			}
+		}
+	}
+
+	private static void displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
 			Settings setting) {
 		// Calculate the size needed for the JFrame
 		int mosaicWidth = mosaicImage.getWidth();
@@ -201,7 +247,7 @@ public class CreatorImpl {
 		frame.add(panel);
 		frame.setSize(totalWidth, totalHeight);
 		frame.setVisible(true);
-		return g2d;
+
 	}
 
 	private static Graphics2D drawMosaicCircles(Graphics g, BufferedImage mosaicImage, int circleDiameter, int spacing,
