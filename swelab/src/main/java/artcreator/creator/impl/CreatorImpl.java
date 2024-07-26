@@ -93,7 +93,6 @@ public class CreatorImpl {
 	}
 
 	public void saveProfile(Profile profile) throws IOException {
-
 		List<Profile> profiles = profileService.loadProfiles();
 		profiles.add(profile);
 		profileService.saveProfiles(profiles);
@@ -179,7 +178,7 @@ public class CreatorImpl {
 		return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
 	}
 
-	private static void displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
+	private static Graphics2D displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
 			Settings setting) {
 		// Calculate the size needed for the JFrame
 		int mosaicWidth = mosaicImage.getWidth();
@@ -192,7 +191,7 @@ public class CreatorImpl {
 			@Override
 			protected void paintComponent(Graphics g) {
 				super.paintComponent(g);
-				drawMosaicCircles(g, mosaicImage, circleDiameter, spacing, setting);
+				Graphics g2d = drawMosaicCircles(g, mosaicImage, circleDiameter, spacing, setting);
 			}
 		};
 
@@ -202,9 +201,10 @@ public class CreatorImpl {
 		frame.add(panel);
 		frame.setSize(totalWidth, totalHeight);
 		frame.setVisible(true);
+		return g2d;
 	}
 
-	private static void drawMosaicCircles(Graphics g, BufferedImage mosaicImage, int circleDiameter, int spacing,
+	private static Graphics2D drawMosaicCircles(Graphics g, BufferedImage mosaicImage, int circleDiameter, int spacing,
 			Settings settings) {
 		Graphics2D g2d = (Graphics2D) g;
 
@@ -231,6 +231,7 @@ public class CreatorImpl {
 						drawY + (circleDiameter + textHeight) / 2 - 5);
 			}
 		}
+		return g2d;
 	}
 
 	public String getLeftImageFilePath() {

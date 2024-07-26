@@ -1,6 +1,12 @@
 package artcreator.gui;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.image.BufferedImage;
+
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -17,6 +23,7 @@ import javax.swing.WindowConstants;
 
 import artcreator.creator.CreatorFactory;
 import artcreator.creator.impl.CreatorImpl;
+import artcreator.creator.impl.Settings;
 import artcreator.creator.port.Creator;
 import artcreator.statemachine.StateMachineFactory;
 import artcreator.statemachine.port.Observer;
@@ -28,7 +35,7 @@ public class CreatorFrame extends JFrame implements Observer {
     private Creator creator = CreatorFactory.FACTORY.creator();
     private Subject subject = StateMachineFactory.FACTORY.subject();
     private Controller controller;
-
+    
     private static final int WIDTH = 600;
     private static final int HEIGHT = 500;
 
@@ -36,7 +43,10 @@ public class CreatorFrame extends JFrame implements Observer {
     private JPanel panel = new JPanel();
 	private JLabel leftImagePlaceHolder;
 	private JLabel rightImagePlaceHolder;
-
+	private JTextField distanceToothpickTextField;
+	private JTextField numberToothpicksTextField;
+	private Settings settings = new Settings();
+	
     public CreatorFrame() {
         super("ArtCreator");
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -63,6 +73,8 @@ public class CreatorFrame extends JFrame implements Observer {
             createImportImageView();
         } else if(newState.equals(State.S.SETTINGS)) {
         	createSettingsView();
+        } else if(newState.equals(State.S.SETTINGS_DONE)) {
+        	createTemplateView();
         }
     }
 
@@ -155,20 +167,20 @@ public class CreatorFrame extends JFrame implements Observer {
         this.panel.add(titleLabel);
 
         // Anzahl Zahnstocher
-        JLabel anzahlLabel = new JLabel("Anzahl Zahnstocher");
-        this.panel.add(anzahlLabel);
+        JLabel numberToothpickLabel = new JLabel("Anzahl Zahnstocher");
+        this.panel.add(numberToothpickLabel);
 
-        JTextField anzahlTextField = new JTextField();
-        this.panel.add(anzahlTextField);
+        numberToothpicksTextField = new JTextField();
+        this.panel.add(numberToothpicksTextField);
 
         // Abstand zwischen Zahnstocher
-        JLabel abstandLabel = new JLabel("Abstand zwischen Zahnstocher");
-        this.panel.add(abstandLabel);
+        JLabel distanceToothpickLabel = new JLabel("Abstand zwischen Zahnstocher");
+        this.panel.add(distanceToothpickLabel);
 
-        JTextField abstandTextField = new JTextField();
+        distanceToothpickTextField = new JTextField();
         JLabel abstandEinheitLabel = new JLabel("mm");
         JPanel abstandPanel = new JPanel();
-        abstandPanel.add(abstandTextField);
+        abstandPanel.add(distanceToothpickTextField);
         abstandPanel.add(abstandEinheitLabel);
         this.panel.add(abstandPanel);
 
@@ -176,7 +188,7 @@ public class CreatorFrame extends JFrame implements Observer {
         JLabel formatLabel = new JLabel("Format");
         this.panel.add(formatLabel);
 
-        String[] formats = {"16:9", "4:3", "1:1"};
+        String[] formats = {"1:1"};
         JComboBox<String> formatComboBox = new JComboBox<>(formats);
         this.panel.add(formatComboBox);
 
@@ -192,14 +204,107 @@ public class CreatorFrame extends JFrame implements Observer {
         this.panel.add(saveProfileButton);
 
         // Weiter Button
+        SaveSettingsController saveSettingsController = new SaveSettingsController(this, subject, creator);
         JButton continueButton = new JButton("Weiter");
         this.panel.add(continueButton);
+        continueButton.addActionListener(saveSettingsController);
 
         this.getContentPane().add(this.panel);
 
         repaintView();
     }
     
+    private void createTemplateView() {
+        clearContent();
+        
+        // Setze Layout
+        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        
+        // Bildauswahl
+        JLabel bildAuswahlLabel = new JLabel("Bildauswahl");
+        bildAuswahlLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(bildAuswahlLabel);
+        
+        JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
+        JLabel leftImageLabel = new JLabel("Linksbild");
+        JLabel rightImageLabel = new JLabel("Rechtsbild");
+        
+        JLabel leftImage = getLeftImagePlaceHolder();
+        JLabel rightImage = getRightImagePlaceHolder();
+        
+        imagePanel.add(leftImageLabel);
+        imagePanel.add(leftImage);
+        imagePanel.add(rightImageLabel);
+        imagePanel.add(rightImage);
+        
+        panel.add(imagePanel);
+        
+        // Einstellungen
+        JLabel settingsLabel = new JLabel("Einstellungen");
+        settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(settingsLabel);
+        
+        JPanel settingsPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        
+        // Anzahl Zahnstocher
+        settingsPanel.add(new JLabel("Anzahl Zahnstocher"));
+        JLabel toothpickCountField = new JLabel(String.valueOf(settings.getNumToothpicks()));
+        settingsPanel.add(toothpickCountField);
+        
+        // Abstand zwischen Zahnstocher
+        settingsPanel.add(new JLabel("Abstand zwischen Zahnstocher"));
+        JPanel spacingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel spacingField = new JLabel(String.valueOf(settings.getToothpickDistance()));
+        System.out.println(settings.getToothpickDistance());
+        spacingPanel.add(spacingField);
+        spacingPanel.add(new JLabel("mm"));
+        settingsPanel.add(spacingPanel);
+        
+        // Format
+        settingsPanel.add(new JLabel("Format"));
+        JLabel aspectRatioLabel = new JLabel("1:1");
+        settingsPanel.add(aspectRatioLabel);
+        
+        // Farbpalette
+        settingsPanel.add(new JLabel("Farbpalette"));
+        JLabel colorPaletteLabel = new JLabel("TBD"); // Placeholder
+        settingsPanel.add(colorPaletteLabel);
+        
+        panel.add(settingsPanel);
+        
+        // Generate Button
+        JButton generateButton = new JButton("Vorlage generieren");
+        generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        generateButton.addActionListener(controller); // Assuming controller handles button actions
+        panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        panel.add(generateButton);
+        
+        // Füge das Panel zum Content Pane hinzu
+        getContentPane().add(panel);
+        
+        repaintView();
+    }
+    
+    public void setSettingsToothpicksDistance(float distance) {
+    	settings.setToothpickDistance(distance);
+    }
+    
+    public void setSettingsToothpicksNumber(int number) {
+    	settings.setToothpickDistance(number);
+    }
+    
+    public Settings getSettings() {
+    	return settings;
+    }
+    
+    public float getDistanceToothpicks() {
+    	return  Float.parseFloat(distanceToothpickTextField.getText());
+    }
+    
+    public int getNumberToothpicks() {
+    	return Integer.parseInt(numberToothpicksTextField.getText());
+    }
+        
     public JLabel getLeftImagePlaceHolder() {
     	return leftImagePlaceHolder;
     }

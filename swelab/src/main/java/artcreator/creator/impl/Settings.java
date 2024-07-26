@@ -14,6 +14,7 @@ public class Settings {
 	private List<String> colorPalette;
 
 	public Settings() {
+		this.colorPalette = new ArrayList<String>();
 	}
 
 	public Settings(float toothpickDistance, int numToothpicks) {

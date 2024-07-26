@@ -1,10 +1,13 @@
 package artcreator.gui;
 
 import java.awt.FileDialog;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -52,7 +55,7 @@ public class ImportImageController extends Controller {
 		}
 	}
 
-	private String openFileChooser(boolean isLeftImgage) {
+	private String openFileChooser(boolean isLeftImage) {
 		FileDialog fileDialog = new FileDialog(super.getMyView());
 		fileDialog.setVisible(true);
 		String directory = fileDialog.getDirectory();
@@ -60,10 +63,18 @@ public class ImportImageController extends Controller {
 		System.out.println("File: " + fileName);
 		if (fileName != null && directory != null) {
 			File file = new File(directory, fileName);
-			if (isLeftImgage) {
-				getMyView().getLeftImagePlaceHolder().setIcon(new ImageIcon(file.getPath()));
+			BufferedImage img = null;
+			try {
+				img = ImageIO.read(new File(file.getPath()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+			if (isLeftImage) {
+
+				getMyView().getLeftImagePlaceHolder().setIcon(new ImageIcon(dimg));
 			} else {
-				getMyView().getRightImagePlaceHolder().setIcon(new ImageIcon(file.getPath()));
+				getMyView().getRightImagePlaceHolder().setIcon(new ImageIcon(dimg));
 			}
 		}
 		return fileName;
