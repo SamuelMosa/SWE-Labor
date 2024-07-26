@@ -5,11 +5,13 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
@@ -59,6 +61,8 @@ public class CreatorFrame extends JFrame implements Observer {
 
         if (newState.equals(State.S.IMAGE_IMPORTED)) {
             createImportImageView();
+        } else if(newState.equals(State.S.SETTINGS)) {
+        	createSettingsView();
         }
     }
 
@@ -128,8 +132,68 @@ public class CreatorFrame extends JFrame implements Observer {
         rightButton.addActionListener(importController);
         this.panel.add(rightButton);
         
+        SettingsController settingsController = new SettingsController(this, subject, creator);
+        JButton settingsButton = new JButton("Einstellungen neu setzen");
+        settingsButton.addActionListener(settingsController);
+        this.panel.add(settingsButton);
+        
 		CreatorImpl impl = new CreatorImpl(null, null);
 		impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
+
+        this.getContentPane().add(this.panel);
+
+        repaintView();
+    }
+    
+    private void createSettingsView() {
+        clearContent();
+
+        this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        // Titel
+        JLabel titleLabel = new JLabel("Einstellungen für die Vorlage setzen");
+        this.panel.add(titleLabel);
+
+        // Anzahl Zahnstocher
+        JLabel anzahlLabel = new JLabel("Anzahl Zahnstocher");
+        this.panel.add(anzahlLabel);
+
+        JTextField anzahlTextField = new JTextField();
+        this.panel.add(anzahlTextField);
+
+        // Abstand zwischen Zahnstocher
+        JLabel abstandLabel = new JLabel("Abstand zwischen Zahnstocher");
+        this.panel.add(abstandLabel);
+
+        JTextField abstandTextField = new JTextField();
+        JLabel abstandEinheitLabel = new JLabel("mm");
+        JPanel abstandPanel = new JPanel();
+        abstandPanel.add(abstandTextField);
+        abstandPanel.add(abstandEinheitLabel);
+        this.panel.add(abstandPanel);
+
+        // Format Auswahl
+        JLabel formatLabel = new JLabel("Format");
+        this.panel.add(formatLabel);
+
+        String[] formats = {"16:9", "4:3", "1:1"};
+        JComboBox<String> formatComboBox = new JComboBox<>(formats);
+        this.panel.add(formatComboBox);
+
+        // Farbpalette setzen
+        JLabel farbpaletteLabel = new JLabel("Farbpalette");
+        this.panel.add(farbpaletteLabel);
+
+        JButton farbpaletteButton = new JButton("Farbpalette setzen");
+        this.panel.add(farbpaletteButton);
+
+        // Einstellungen als Profil speichern Button
+        JButton saveProfileButton = new JButton("Einstellungen als Profil speichern");
+        this.panel.add(saveProfileButton);
+
+        // Weiter Button
+        JButton continueButton = new JButton("Weiter");
+        this.panel.add(continueButton);
 
         this.getContentPane().add(this.panel);
 

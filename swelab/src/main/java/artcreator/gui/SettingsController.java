@@ -10,11 +10,11 @@ import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.StateMachine;
 import artcreator.statemachine.port.Subject;
 
-public class StartingScreenController extends Controller {
+public class SettingsController extends Controller {
 
-	public StartingScreenController(CreatorFrame view, Subject subject, Creator model) {
+	public SettingsController(CreatorFrame view, Subject subject, Creator model) {
 		super(view, subject, model);
-// TODO Auto-generated constructor stub
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -27,8 +27,8 @@ public class StartingScreenController extends Controller {
 	public void actionPerformed(ActionEvent e) {
 		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
 		State currentState = stateMachine.getState();
-		if (currentState.equals(State.S.INIT)) {
-			stateMachine.setState(State.S.IMAGE_IMPORTED);
+		if (currentState.equals(State.S.IMAGE_IMPORTED)) {
+			stateMachine.setState(State.S.SETTINGS);
 		}
 	}
 
