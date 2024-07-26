@@ -5,9 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-
-
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import artcreator.creator.impl.CreatorImpl;
@@ -22,44 +21,51 @@ import artcreator.statemachine.port.Subject;
 
 public class ImportImageController extends Controller {
 
-    private JLabel imageLabel;
+	private JLabel imageLabel;
 
-    public ImportImageController(CreatorFrame view, Subject subject, Creator model) {
-        super(view, subject, model);
-    }
+	public ImportImageController(CreatorFrame view, Subject subject, Creator model) {
+		super(view, subject, model);
+	}
 
-    public void setImageLabel(JLabel imageLabel) {
-        this.imageLabel = imageLabel;
-    }
+	public void setImageLabel(JLabel imageLabel) {
+		this.imageLabel = imageLabel;
+	}
 
-    @Override
-    public void update(State currentState) {
-        // TODO Auto-generated method stub
-    }
+	@Override
+	public void update(State currentState) {
+		// TODO Auto-generated method stub
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
-        State currentState = stateMachine.getState();
-        if (currentState.equals(State.S.IMAGE_IMPORTED)) {
-            openFileChooser();
-        } else {
-            throw new IllegalArgumentException("wrong state!");
-        }
-    }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String str = (((JButton) e.getSource()).getText());
+		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
+		State currentState = stateMachine.getState();
+		if (currentState.equals(State.S.IMAGE_IMPORTED)) {
+			if (str.equals("Linkes Bild Importieren")) {
+				getMyModel().setLeftImageFilePath(openFileChooser(true));
+			} else {
+				getMyModel().setRightImageFilePath(openFileChooser(false));
+			}
+		} else {
+			throw new IllegalArgumentException("wrong state!");
+		}
+	}
 
-    private String openFileChooser() {
-        FileDialog fileDialog = new FileDialog(super.getMyView());
-        fileDialog.setVisible(true);
-        String directory = fileDialog.getDirectory();
-        String fileName = fileDialog.getFile();
-        System.out.println("File: " + fileName);
-        if (fileName != null && directory != null) {
-            File file = new File(directory, fileName);
-            if (imageLabel != null) {
-                imageLabel.setIcon(new ImageIcon(file.getPath()));
-            }
-        }
-        return fileName;
-    }
+	private String openFileChooser(boolean isLeftImgage) {
+		FileDialog fileDialog = new FileDialog(super.getMyView());
+		fileDialog.setVisible(true);
+		String directory = fileDialog.getDirectory();
+		String fileName = fileDialog.getFile();
+		System.out.println("File: " + fileName);
+		if (fileName != null && directory != null) {
+			File file = new File(directory, fileName);
+			if (isLeftImgage) {
+				getMyView().getLeftImagePlaceHolder().setIcon(new ImageIcon(file.getPath()));
+			} else {
+				getMyView().getRightImagePlaceHolder().setIcon(new ImageIcon(file.getPath()));
+			}
+		}
+		return fileName;
+	}
 }

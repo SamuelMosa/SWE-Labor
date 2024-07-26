@@ -20,7 +20,7 @@ public class Controller implements ActionListener, Observer {
 
 	  public Controller(CreatorFrame view, Subject subject, Creator model) {
 	    this.setMyView(view);
-	    this.myModel = model;
+	    this.setMyModel(model);
 	    this.subject = subject;
 	    this.subject.attach(this); 
 	  }
@@ -30,7 +30,7 @@ public class Controller implements ActionListener, Observer {
 	   /* read input */
 		String str = (((JButton)  e.getSource()).getText());
 		  
-	    CompletableFuture.runAsync(() -> this.myModel.sysop(str));
+	    CompletableFuture.runAsync(() -> this.getMyModel().sysop(str));
 	  }
 	  
 	  public void update(State newState) {/* modify controller or view if necessary */}
@@ -41,6 +41,14 @@ public class Controller implements ActionListener, Observer {
 
 	public void setMyView(CreatorFrame myView) {
 		this.myView = myView;
+	}
+
+	public Creator getMyModel() {
+		return myModel;
+	}
+
+	public void setMyModel(Creator myModel) {
+		this.myModel = myModel;
 	}
 	  
 	  

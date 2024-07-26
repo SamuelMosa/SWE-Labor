@@ -32,6 +32,8 @@ public class CreatorFrame extends JFrame implements Observer {
 
     private JButton btn = new JButton("Hello SWE");
     private JPanel panel = new JPanel();
+	private JLabel leftImagePlaceHolder;
+	private JLabel rightImagePlaceHolder;
 
     public CreatorFrame() {
         super("ArtCreator");
@@ -109,29 +111,36 @@ public class CreatorFrame extends JFrame implements Observer {
 
         JLabel leftImage = new JLabel("Linksbild");
         this.panel.add(leftImage);
-        JLabel leftImagePlaceHolder = new JLabel();
+        leftImagePlaceHolder = new JLabel();
         this.panel.add(leftImagePlaceHolder);
         ImportImageController importController = new ImportImageController(this, subject, creator);
         importController.setImageLabel(leftImagePlaceHolder); // Übergibt das Label an den Controller
-        JButton leftButton = new JButton("Importieren");
+        JButton leftButton = new JButton("Linkes Bild Importieren");
         leftButton.addActionListener(importController);
         this.panel.add(leftButton);
         
         JLabel rightImage = new JLabel("Rechtsbild");
         this.panel.add(rightImage);
-        JLabel rightImagePlaceHolder = new JLabel();
+        rightImagePlaceHolder = new JLabel();
         this.panel.add(rightImagePlaceHolder);
         importController.setImageLabel(rightImagePlaceHolder); // Übergibt das Label an den Controller
-        JButton rightButton = new JButton("Importieren");
+        JButton rightButton = new JButton("Rechtes Bild Importieren");
         rightButton.addActionListener(importController);
         this.panel.add(rightButton);
         
 		CreatorImpl impl = new CreatorImpl(null, null);
-		impl.importImage(getWarningString(), getName())
-        
+		impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
 
         this.getContentPane().add(this.panel);
 
         repaintView();
+    }
+    
+    public JLabel getLeftImagePlaceHolder() {
+    	return leftImagePlaceHolder;
+    }
+    
+    public JLabel getRightImagePlaceHolder() {
+    	return rightImagePlaceHolder;
     }
 }

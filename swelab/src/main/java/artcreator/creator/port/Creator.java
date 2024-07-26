@@ -25,4 +25,15 @@ public interface Creator {
 	
 	void saveTemplate(Template template);
 	
+	void setImage(String filePath);
+	
+	public String getLeftImageFilePath();
+	
+	public void setLeftImageFilePath(String leftImageFilePath);
+
+	public String getRightImageFilePath();
+	
+	public void setRightImageFilePath(String rightImageFilePath);
+	
+	
 }

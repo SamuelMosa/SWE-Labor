@@ -73,6 +73,36 @@ public class CreatorFacade implements CreatorFactory, Creator {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setImage(String filePath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getLeftImageFilePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setLeftImageFilePath(String leftImageFilePath) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getRightImageFilePath() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setRightImageFilePath(String rightImageFilePath) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 	

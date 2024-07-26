@@ -22,6 +22,9 @@ public class CreatorImpl {
 	private StateMachine stateMachine;
 	private Domain domain;
 	private ProfileService profileService;
+	
+	private String leftImageFilePath;
+	private String rightImageFilePath;
 
 	public CreatorImpl(StateMachine stateMachine, Domain domain) {
 		this.stateMachine = stateMachine;
@@ -228,6 +231,22 @@ public class CreatorImpl {
 						drawY + (circleDiameter + textHeight) / 2 - 5);
 			}
 		}
+	}
+
+	public String getLeftImageFilePath() {
+		return leftImageFilePath;
+	}
+
+	public void setLeftImageFilePath(String leftImageFilePath) {
+		this.leftImageFilePath = leftImageFilePath;
+	}
+
+	public String getRightImageFilePath() {
+		return rightImageFilePath;
+	}
+
+	public void setRightImageFilePath(String rightImageFilePath) {
+		this.rightImageFilePath = rightImageFilePath;
 	}
 
 }
