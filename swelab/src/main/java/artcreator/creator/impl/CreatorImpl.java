@@ -26,7 +26,7 @@ public class CreatorImpl {
 	public CreatorImpl(StateMachine stateMachine, Domain domain) {
 		this.stateMachine = stateMachine;
 		this.domain = domain;
-		this.profileService = new ProfileServiceImpl(); // Idealerweise Dependency Injection verwenden
+		this.profileService = new ProfileServiceImpl(); 
 	}
 
 	public void sysop(String str) {

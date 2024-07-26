@@ -12,16 +12,18 @@ public interface State {
 
 	public enum S implements State {
 
-		CREATE_TEMPLATE //
-
-		/* more states */
-		
-		;
+		INIT, //
+		IMAGE_IMPORTED,
+		SWITCH_PICTURES,
+		IMPORT_PROFILE,
+		SETTINGS,
+		SETTINGS_DONE,
+		TEMPLATE_GENERATED;
 
 		private List<State> subStates;
 
-		public static final S INITIAL_STATE = CREATE_TEMPLATE;
-
+		public static final S INITIAL_STATE = INIT;
+	
 		private S(State... subS) {
 			this.subStates = new ArrayList<>(Arrays.asList(subS));
 		}

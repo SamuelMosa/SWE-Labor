@@ -19,7 +19,7 @@ public class Controller implements ActionListener, Observer {
 
 
 	  public Controller(CreatorFrame view, Subject subject, Creator model) {
-	    this.myView = view;
+	    this.setMyView(view);
 	    this.myModel = model;
 	    this.subject = subject;
 	    this.subject.attach(this); 
@@ -34,5 +34,15 @@ public class Controller implements ActionListener, Observer {
 	  }
 	  
 	  public void update(State newState) {/* modify controller or view if necessary */}
+
+	public CreatorFrame getMyView() {
+		return myView;
 	}
+
+	public void setMyView(CreatorFrame myView) {
+		this.myView = myView;
+	}
+	  
+	  
+}
 	

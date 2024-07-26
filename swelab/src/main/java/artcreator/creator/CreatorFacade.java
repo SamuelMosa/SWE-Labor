@@ -28,7 +28,7 @@ public class CreatorFacade implements CreatorFactory, Creator {
 
 	@Override
 	public synchronized void sysop(String str) {
-		if (this.stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE /* choose right state*/ ))
+		if (this.stateMachine.getState().isSubStateOf( S.INIT /* choose right state*/ ))
 			this.creator.sysop(str);
 	}
 

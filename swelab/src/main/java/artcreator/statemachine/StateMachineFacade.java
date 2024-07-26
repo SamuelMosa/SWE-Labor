@@ -6,11 +6,10 @@ import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.StateMachine;
 import artcreator.statemachine.port.Subject;
 
-public class StateMachineFacade implements StateMachineFactory, StateMachine, Subject{
-	
+public class StateMachineFacade implements StateMachineFactory, StateMachine, Subject {
+
 	private StateMachineImpl stateMachine;
 
-	
 	@Override
 	public synchronized StateMachine stateMachine() {
 		if (this.stateMachine == null)
@@ -24,13 +23,11 @@ public class StateMachineFacade implements StateMachineFactory, StateMachine, Su
 			this.stateMachine = new StateMachineImpl();
 		return this;
 	}
-	
-	
-	
+
 	@Override
 	public synchronized void attach(Observer obs) {
 		this.stateMachine.attach(obs);
-		
+
 	}
 
 	@Override
@@ -47,13 +44,4 @@ public class StateMachineFacade implements StateMachineFactory, StateMachine, Su
 	public synchronized boolean setState(State state) {
 		return this.stateMachine.setState(state);
 	}
-
-
-
-	
-
-	
-	
-	
-
 }

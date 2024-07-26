@@ -29,8 +29,8 @@ class InitTest implements Observer{
 		Assertions.assertEquals(stateMachine, subject);
 		subject.attach(this);
 		
-		Assertions.assertTrue(stateMachine.getState().isSubStateOf( S.CREATE_TEMPLATE));
-		Assertions.assertEquals(S.CREATE_TEMPLATE, this.s);
+		Assertions.assertTrue(stateMachine.getState().isSubStateOf( S.INIT));
+		Assertions.assertEquals(S.INIT, this.s);
 		subject.detach(this);
 
 		Domain domain = DomainFactory.FACTORY.domain();
