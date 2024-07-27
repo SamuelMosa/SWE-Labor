@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.image.BufferedImage;
 
 import javax.swing.BorderFactory;
@@ -43,8 +46,8 @@ public class CreatorFrame extends JFrame implements Observer {
     private Subject subject = StateMachineFactory.FACTORY.subject();
     private Controller controller;
     
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 500;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
 
     private JButton btn = new JButton("Hello SWE");
     private JPanel panel = new JPanel();
@@ -94,8 +97,18 @@ public class CreatorFrame extends JFrame implements Observer {
         this.controller = new StartingScreenController(this, subject, creator);
         this.btn.setText("Bild importieren");
         this.btn.addActionListener(this.controller);
-        this.panel.add(this.btn);
-        this.getContentPane().add(this.panel);
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        mainPanel.add(this.btn, gbc);
+
+        this.getContentPane().add(mainPanel, BorderLayout.CENTER);
+        //this.panel.add(this.btn);
+        //this.getContentPane().add(this.panel);
 
         repaintView();
     }
@@ -115,57 +128,105 @@ public class CreatorFrame extends JFrame implements Observer {
     private void createImportImageView() {
         clearContent();
 
-        this.panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        this.panel.setLayout(new BorderLayout());
 
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        this.panel.add(contentPanel, BorderLayout.CENTER);
+
+        // Step 1: Bildanzahl festlegen
+        JPanel bildCountPanel = new JPanel();
+        bildCountPanel.setLayout(new BoxLayout(bildCountPanel, BoxLayout.Y_AXIS));
+        bildCountPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bildCountPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         JLabel bildCount = new JLabel("1. Bildanzahl festlegen");
-        this.panel.add(bildCount);
+        bildCount.setAlignmentX(Component.LEFT_ALIGNMENT);
+        bildCountPanel.add(bildCount);
 
-//        JRadioButton singleImage = new JRadioButton("Ein Bild");
         JRadioButton twoImages = new JRadioButton("Zwei Bilder");
+        twoImages.setAlignmentX(Component.LEFT_ALIGNMENT);
         ButtonGroup group = new ButtonGroup();
-//        group.add(singleImage);
         group.add(twoImages);
-//        this.panel.add(singleImage);
-        this.panel.add(twoImages);
+        bildCountPanel.add(twoImages);
         twoImages.setSelected(true);
 
-        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
-        this.panel.add(separator);
+        contentPanel.add(bildCountPanel);
 
+        // Separator
+        JSeparator separator = new JSeparator(SwingConstants.HORIZONTAL);
+        contentPanel.add(separator);
+
+        // Step 2: Bild festlegen
+        JPanel importImagesPanel = new JPanel();
+        importImagesPanel.setLayout(new GridLayout(2, 2, 10, 10)); 
+        importImagesPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        importImagesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         JLabel importImages = new JLabel("2. Bild festlegen");
-        this.panel.add(importImages);
+        importImages.setAlignmentX(Component.LEFT_ALIGNMENT);
+        contentPanel.add(importImages);
 
         JLabel leftImage = new JLabel("Linksbild");
-        this.panel.add(leftImage);
-        leftImagePlaceHolder = new JLabel();
-        this.panel.add(leftImagePlaceHolder);
-        ImportImageController importController = new ImportImageController(this, subject, creator);
-        importController.setImageLabel(leftImagePlaceHolder); // Übergibt das Label an den Controller
-        JButton leftButton = new JButton("Linkes Bild Importieren");
-        leftButton.addActionListener(importController);
-        this.panel.add(leftButton);
-        
+        leftImage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        importImagesPanel.add(leftImage);
         JLabel rightImage = new JLabel("Rechtsbild");
-        this.panel.add(rightImage);
-        rightImagePlaceHolder = new JLabel();
-        this.panel.add(rightImagePlaceHolder);
-        importController.setImageLabel(rightImagePlaceHolder); // Übergibt das Label an den Controller
-        JButton rightButton = new JButton("Rechtes Bild Importieren");
-        rightButton.addActionListener(importController);
-        this.panel.add(rightButton);
+        rightImage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        importImagesPanel.add(rightImage);
+
+        leftImagePlaceHolder = new JLabel();
+        leftImagePlaceHolder.setPreferredSize(new Dimension(200, 200)); 
+        leftImagePlaceHolder.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        importImagesPanel.add(leftImagePlaceHolder);
         
+        rightImagePlaceHolder = new JLabel();
+        rightImagePlaceHolder.setPreferredSize(new Dimension(200, 200)); 
+        rightImagePlaceHolder.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        importImagesPanel.add(rightImagePlaceHolder);
+        
+        contentPanel.add(importImagesPanel);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 2, 10, 10));
+        buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        ImportImageController importController = new ImportImageController(this, subject, creator);
+        
+        JButton leftButton = new JButton("Linkes Bild Importieren");
+        leftButton.setPreferredSize(new Dimension(200, 30));
+        leftButton.addActionListener(importController);
+        buttonPanel.add(leftButton);
+        
+        JButton rightButton = new JButton("Rechtes Bild Importieren");
+        rightButton.setPreferredSize(new Dimension(200, 30));
+        rightButton.addActionListener(importController);
+        buttonPanel.add(rightButton);
+        
+        contentPanel.add(buttonPanel);
+
+        JPanel settingsPanel = new JPanel();
+        settingsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
         SettingsController settingsController = new SettingsController(this, subject, creator);
         JButton settingsButton = new JButton("Einstellungen neu setzen");
         settingsButton.addActionListener(settingsController);
-        this.panel.add(settingsButton);
-        
-		CreatorImpl impl = new CreatorImpl(null, null);
-		importedImages = impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
+        settingsPanel.add(settingsButton);
+
+        JButton profileButton = new JButton("Profil verwenden");
+        profileButton.addActionListener(e -> {
+        });
+        settingsPanel.add(profileButton);
+
+        this.panel.add(settingsPanel, BorderLayout.SOUTH);
+
+        CreatorImpl impl = new CreatorImpl(null, null);
+        importedImages = impl.importImage(creator.getLeftImageFilePath(), creator.getRightImageFilePath());
 
         this.getContentPane().add(this.panel);
 
         repaintView();
     }
+
+
     
     private void createSettingsView() {
         clearContent();
@@ -175,129 +236,182 @@ public class CreatorFrame extends JFrame implements Observer {
         System.out.println("Left file path: " + leftFilePath +  ", Right file path" + rightFilePath);
 		importedImages = impl.importImage(leftFilePath, rightFilePath);
 
-        // Titel
+        this.panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
         JLabel titleLabel = new JLabel("Einstellungen für die Vorlage setzen");
-        this.panel.add(titleLabel);
+        gbc.gridwidth = 2;
+        panel.add(titleLabel, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
 
-        // Anzahl Zahnstocher
         JLabel numberToothpickLabel = new JLabel("Anzahl Zahnstocher");
-        this.panel.add(numberToothpickLabel);
+        panel.add(numberToothpickLabel, gbc);
+        gbc.gridx = 1;
+        numberToothpicksTextField = new JTextField(20);
+        panel.add(numberToothpicksTextField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
 
-        numberToothpicksTextField = new JTextField();
-        this.panel.add(numberToothpicksTextField);
-
-        // Abstand zwischen Zahnstocher
         JLabel distanceToothpickLabel = new JLabel("Abstand zwischen Zahnstocher");
-        this.panel.add(distanceToothpickLabel);
-
-        distanceToothpickTextField = new JTextField();
+        panel.add(distanceToothpickLabel, gbc);
+        gbc.gridx = 1;
+        JPanel abstandPanel = new JPanel(new BorderLayout());
+        distanceToothpickTextField = new JTextField(20);
+        abstandPanel.add(distanceToothpickTextField, BorderLayout.CENTER);
         JLabel abstandEinheitLabel = new JLabel("mm");
-        JPanel abstandPanel = new JPanel();
-        abstandPanel.add(distanceToothpickTextField);
-        abstandPanel.add(abstandEinheitLabel);
-        this.panel.add(abstandPanel);
+        abstandPanel.add(abstandEinheitLabel, BorderLayout.EAST);
+        panel.add(abstandPanel, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
 
-        // Format Auswahl
         JLabel formatLabel = new JLabel("Format");
-        this.panel.add(formatLabel);
-
+        panel.add(formatLabel, gbc);
+        gbc.gridx = 1;
         String[] formats = {"1:1"};
         JComboBox<String> formatComboBox = new JComboBox<>(formats);
-        this.panel.add(formatComboBox);
+        panel.add(formatComboBox, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
 
-        // Farbpalette setzen
         JLabel farbpaletteLabel = new JLabel("Farbpalette");
-        this.panel.add(farbpaletteLabel);
-
+        panel.add(farbpaletteLabel, gbc);
+        gbc.gridx = 1;
         JButton farbpaletteButton = new JButton("Farbpalette setzen");
-        this.panel.add(farbpaletteButton);
-
-        // Einstellungen als Profil speichern Button
+        panel.add(farbpaletteButton, gbc);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.weighty = 1.0; 
+        panel.add(Box.createVerticalGlue(), gbc);
+        gbc.weighty = 0; 
+        
         JButton saveProfileButton = new JButton("Einstellungen als Profil speichern");
-        this.panel.add(saveProfileButton);
+        gbc.gridwidth = 1;
+        gbc.gridx = 1;
+        gbc.gridy += 2;
+        panel.add(saveProfileButton, gbc);
 
-        // Weiter Button
         SaveSettingsController saveSettingsController = new SaveSettingsController(this, subject, creator);
         JButton continueButton = new JButton("Weiter");
-        this.panel.add(continueButton);
+        gbc.gridx = 0;
+        gbc.anchor = GridBagConstraints.EAST;
         continueButton.addActionListener(saveSettingsController);
+        panel.add(continueButton, gbc);
 
         this.getContentPane().add(this.panel);
-
         repaintView();
     }
+
     
     private void createTemplateView() {
         clearContent();
         
-        // Setze Layout
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        
-        // Bildauswahl
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+
         JLabel bildAuswahlLabel = new JLabel("Bildauswahl");
-        bildAuswahlLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(bildAuswahlLabel);
+        panel.add(bildAuswahlLabel, gbc);
         
-        JPanel imagePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 20));
+        gbc.gridy++;
+        JPanel imagePanel = new JPanel(new GridBagLayout());
+        GridBagConstraints imgGbc = new GridBagConstraints();
+        imgGbc.insets = new Insets(10, 10, 10, 10);
+        imgGbc.gridx = 0;
+        imgGbc.gridy = 0;
+        imgGbc.anchor = GridBagConstraints.CENTER;
+
         JLabel leftImageLabel = new JLabel("Linksbild");
-        JLabel rightImageLabel = new JLabel("Rechtsbild");
-        
+        imagePanel.add(leftImageLabel, imgGbc);
+        imgGbc.gridy++;
         JLabel leftImage = getLeftImagePlaceHolder();
+        imagePanel.add(leftImage, imgGbc);
+        leftImage.setPreferredSize(new Dimension(200, 200)); 
+
+        imgGbc.gridx++;
+        imgGbc.gridy = 0;
+        JLabel rightImageLabel = new JLabel("Rechtsbild");
+        imagePanel.add(rightImageLabel, imgGbc);
+        imgGbc.gridy++;
         JLabel rightImage = getRightImagePlaceHolder();
-        
-        imagePanel.add(leftImageLabel);
-        imagePanel.add(leftImage);
-        imagePanel.add(rightImageLabel);
-        imagePanel.add(rightImage);
-        
-        panel.add(imagePanel);
-        
-        // Einstellungen
+        imagePanel.add(rightImage, imgGbc);
+        rightImage.setPreferredSize(new Dimension(200, 200)); 
+
+
+        gbc.gridwidth = 2;
+        panel.add(imagePanel, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+
         JLabel settingsLabel = new JLabel("Einstellungen");
-        settingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.add(settingsLabel);
-        
-        JPanel settingsPanel = new JPanel(new GridLayout(0, 2, 10, 10));
-        
-        // Anzahl Zahnstocher
-        settingsPanel.add(new JLabel("Anzahl Zahnstocher"));
+        panel.add(settingsLabel, gbc);
+
+        gbc.gridy++;
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints settingsGbc = new GridBagConstraints();
+        settingsGbc.insets = new Insets(10, 10, 10, 10);
+        settingsGbc.gridx = 0;
+        settingsGbc.gridy = 0;
+        settingsGbc.fill = GridBagConstraints.HORIZONTAL;
+
+        settingsPanel.add(new JLabel("Anzahl Zahnstocher"), settingsGbc);
+        settingsGbc.gridx++;
         JLabel toothpickCountField = new JLabel(String.valueOf(settings.getNumToothpicks()));
-        settingsPanel.add(toothpickCountField);
-        
-        // Abstand zwischen Zahnstocher
-        settingsPanel.add(new JLabel("Abstand zwischen Zahnstocher"));
+        settingsPanel.add(toothpickCountField, settingsGbc);
+
+        settingsGbc.gridx = 0;
+        settingsGbc.gridy++;
+        settingsPanel.add(new JLabel("Abstand zwischen Zahnstocher"), settingsGbc);
+        settingsGbc.gridx++;
         JPanel spacingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel spacingField = new JLabel(String.valueOf(settings.getToothpickDistance()));
-        System.out.println(settings.getToothpickDistance());
         spacingPanel.add(spacingField);
         spacingPanel.add(new JLabel("mm"));
-        settingsPanel.add(spacingPanel);
-        
-        // Format
-        settingsPanel.add(new JLabel("Format"));
+        settingsPanel.add(spacingPanel, settingsGbc);
+
+        settingsGbc.gridx = 0;
+        settingsGbc.gridy++;
+        settingsPanel.add(new JLabel("Format"), settingsGbc);
+        settingsGbc.gridx++;
         JLabel aspectRatioLabel = new JLabel("1:1");
-        settingsPanel.add(aspectRatioLabel);
-        
-        // Farbpalette
-        settingsPanel.add(new JLabel("Farbpalette"));
+        settingsPanel.add(aspectRatioLabel, settingsGbc);
+
+        settingsGbc.gridx = 0;
+        settingsGbc.gridy++;
+        settingsPanel.add(new JLabel("Farbpalette"), settingsGbc);
+        settingsGbc.gridx++;
         JLabel colorPaletteLabel = new JLabel("TBD"); // Placeholder
-        settingsPanel.add(colorPaletteLabel);
-        
-        panel.add(settingsPanel);
-        
-        // Generate Button
+        settingsPanel.add(colorPaletteLabel, settingsGbc);
+
+        gbc.gridwidth = 2;
+        panel.add(settingsPanel, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+
         JButton generateButton = new JButton("Vorlage generieren");
-        generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        generateButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         GenerateTemplateController generateTemplateController = new GenerateTemplateController(this, subject, creator);
         generateButton.addActionListener(generateTemplateController); // Assuming controller handles button actions
-        panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
-        panel.add(generateButton);
-        
-        // Füge das Panel zum Content Pane hinzu
+        gbc.gridy++;
+        panel.add(generateButton, gbc);
+
         getContentPane().add(panel);
         
         repaintView();
     }
+
     
     private void createGenerateTemplateView() {
         clearContent();
