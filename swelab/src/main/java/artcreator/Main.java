@@ -35,7 +35,7 @@ public class Main {
 		settings_0.insertColor("#FFFFFF");
 
 		
-		BufferedImage[] images = impl.importImage("C:/Users/ninoo/git/istockphoto-1271087162-612x612.jpg", "C:/Users/ninoo/git/istockphoto-1271087162-612x612.jpg");
+		BufferedImage[] images = impl.importImage("C:/Users/domin/Pictures/Hintergrund", "C:/Users/domin/Pictures/Hintergrund");
 		
 		impl.generateTemplate( images[0], images[1], settings_0);
 
