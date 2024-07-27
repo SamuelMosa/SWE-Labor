@@ -29,7 +29,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		CreatorFrame frame = new CreatorFrame();
+		//frame.createColorPaletteView();
+
 		frame.setVisible(true);
+		
 		System.out.println("Projekt erfolgreich eingerichtet");
 		CreatorImpl impl = new CreatorImpl(null, null);
 		
@@ -49,7 +52,7 @@ public class Main {
 		settings_0.insertColor("#FFFF00");
 		settings_0.insertColor("#00FFFF");
 		settings_0.insertColor("#FFFFFF");
-
+		
 		System.out.println(System.getProperty("user.dir"));
 		
 		

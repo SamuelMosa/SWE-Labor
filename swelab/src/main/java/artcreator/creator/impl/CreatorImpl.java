@@ -98,123 +98,130 @@ public class CreatorImpl {
 		profileService.saveProfiles(profiles);
 	}
 
-	public Template generateTemplate(BufferedImage leftImage, BufferedImage rightImage, Settings settings) {
+    public static Template generateTemplate(BufferedImage leftImage, BufferedImage rightImage, Settings settings) {
+        // Convert hexadecimal colors to Color objects
+        List<Color> colorList = new ArrayList<>();
+        for (String hex : settings.getColorPalette()) {
+            colorList.add(Color.decode(hex));
+        }
 
-	    // Convert hexadecimal colors to Color objects
-	    List<Color> colorList = new ArrayList<>();
-	    for (String hex : settings.getColorPalette()) {
-	        colorList.add(Color.decode(hex));
-	    }
+        // Specify the dimensions of the mosaic
+        int mosaicWidth = (int) Math.sqrt(settings.getNumToothpicks());
+        int mosaicHeight = mosaicWidth;
 
-	    // Specify the dimensions of the mosaic
-	    int mosaicWidth = (int) Math.sqrt(settings.getNumToothpicks());
-	    int mosaicHeight = mosaicWidth;
+        // Create the mosaic image
+        BufferedImage leftMosaicImage = createMosaicImage(leftImage, mosaicWidth, mosaicHeight, colorList);
+        BufferedImage rightMosaicImage = createMosaicImage(rightImage, mosaicWidth, mosaicHeight, colorList);
 
-	    // Create the mosaic image
-	    BufferedImage leftMosaicImage = createMosaicImage(leftImage, mosaicWidth, mosaicHeight, colorList);
-	    BufferedImage rightMosaicImage = createMosaicImage(rightImage, mosaicWidth, mosaicHeight, colorList);
+        // Calculate the required canvas dimensions
+        int circleDiameter = 20;
+        int spacing = 10;
+        int canvasWidth = mosaicWidth * (circleDiameter + spacing) - spacing;
+        int canvasHeight = mosaicHeight * (circleDiameter + spacing) - spacing;
 
+        // Prepare the Graphics2D object
+        BufferedImage leftCanvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D leftG2d = leftCanvas.createGraphics();
 
-	    // Prepare the Graphics2D object
-	    BufferedImage leftCanvas = new BufferedImage(leftImage.getWidth()+50, leftImage.getHeight()+50, BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D leftG2d = leftCanvas.createGraphics();
+        BufferedImage rightCanvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D rightG2d = rightCanvas.createGraphics();
 
-	    BufferedImage rightCanvas = new BufferedImage(rightImage.getWidth()+50, rightImage.getHeight()+50, BufferedImage.TYPE_INT_ARGB);
-	    Graphics2D rightG2d = rightCanvas.createGraphics();
-	    
-	    // Display the mosaic image with circles
-	    drawMosaicCircles(leftG2d, leftMosaicImage, 20, 10, settings); // Circle diameter and spacing
-	    drawMosaicCircles(rightG2d, rightMosaicImage, 20, 10, settings); // Circle diameter and spacing
+        // Display the mosaic image with circles
+        drawMosaicCircles(leftG2d, leftMosaicImage, circleDiameter, spacing, settings); // Circle diameter and spacing
+        drawMosaicCircles(rightG2d, rightMosaicImage, circleDiameter, spacing, settings); // Circle diameter and spacing
 
-	    //g2d.dispose();
+        // Dispose graphics objects
+        leftG2d.dispose();
+        rightG2d.dispose();
 
-	    System.out.println("Template generated");
+        System.out.println("Template generated");
 
-	    return new Template(leftCanvas, rightCanvas); // Return a suitable Template object instead of null
-	}
+        return new Template(leftCanvas, rightCanvas); // Return a suitable Template object instead of null
+    }
 
-	public void saveTemplate(Template template) {
-	    // TODO Auto-generated method stub
-	}
+    public static void saveTemplate(Template template) {
+        // TODO Auto-generated method stub
+    }
 
-	private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight, List<Color> colorList) {
-	    int width = originalImage.getWidth();
-	    int height = originalImage.getHeight();
+    private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight, List<Color> colorList) {
+        int width = originalImage.getWidth();
+        int height = originalImage.getHeight();
 
-	    // Create a new image with the reduced dimensions
-	    BufferedImage scaledImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
+        // Create a new image with the reduced dimensions
+        BufferedImage scaledImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
 
-	    // Scale down the original image to the new dimensions
-	    Graphics2D g2d = scaledImage.createGraphics();
-	    g2d.drawImage(originalImage, 0, 0, mosaicWidth, mosaicHeight, null);
-	    g2d.dispose();
+        // Scale down the original image to the new dimensions
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.drawImage(originalImage, 0, 0, mosaicWidth, mosaicHeight, null);
+        g2d.dispose();
 
-	    // Create a new image for the mosaic with closest colors
-	    BufferedImage mosaicImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
+        // Create a new image for the mosaic with closest colors
+        BufferedImage mosaicImage = new BufferedImage(mosaicWidth, mosaicHeight, BufferedImage.TYPE_INT_ARGB);
 
-	    for (int y = 0; y < mosaicHeight; y++) {
-	        for (int x = 0; x < mosaicWidth; x++) {
-	            // Get the color of the current pixel
-	            int pixelColor = scaledImage.getRGB(x, y);
-	            Color pixel = new Color(pixelColor, true);
+        for (int y = 0; y < mosaicHeight; y++) {
+            for (int x = 0; x < mosaicWidth; x++) {
+                // Get the color of the current pixel
+                int pixelColor = scaledImage.getRGB(x, y);
+                Color pixel = new Color(pixelColor, true);
 
-	            // Find the closest color from the list
-	            Color closestColor = findClosestColor(pixel, colorList);
+                // Find the closest color from the list
+                Color closestColor = findClosestColor(pixel, colorList);
 
-	            // Set the color in the mosaic image
-	            mosaicImage.setRGB(x, y, closestColor.getRGB());
-	        }
-	    }
+                // Set the color in the mosaic image
+                mosaicImage.setRGB(x, y, closestColor.getRGB());
+            }
+        }
 
-	    return mosaicImage;
-	}
+        return mosaicImage;
+    }
 
-	private static Color findClosestColor(Color color, List<Color> colorList) {
-	    Color closestColor = null;
-	    int minDistance = Integer.MAX_VALUE;
+    private static Color findClosestColor(Color color, List<Color> colorList) {
+        Color closestColor = null;
+        int minDistance = Integer.MAX_VALUE;
 
-	    for (Color candidate : colorList) {
-	        int distance = colorDistance(color, candidate);
-	        if (distance < minDistance) {
-	            minDistance = distance;
-	            closestColor = candidate;
-	        }
-	    }
+        for (Color candidate : colorList) {
+            int distance = colorDistance(color, candidate);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestColor = candidate;
+            }
+        }
 
-	    return closestColor;
-	}
+        return closestColor;
+    }
 
-	private static int colorDistance(Color color1, Color color2) {
-	    int rDiff = color1.getRed() - color2.getRed();
-	    int gDiff = color1.getGreen() - color2.getGreen();
-	    int bDiff = color1.getBlue() - color2.getBlue();
-	    return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
-	}
+    private static int colorDistance(Color color1, Color color2) {
+        int rDiff = color1.getRed() - color2.getRed();
+        int gDiff = color1.getGreen() - color2.getGreen();
+        int bDiff = color1.getBlue() - color2.getBlue();
+        return rDiff * rDiff + gDiff * gDiff + bDiff * bDiff; // Squared Euclidean distance
+    }
 
-	private static void drawMosaicCircles(Graphics2D g2d, BufferedImage mosaicImage, int circleDiameter, int spacing, Settings settings) {
-	    int mosaicWidth = mosaicImage.getWidth();
-	    int mosaicHeight = mosaicImage.getHeight();
+    private static void drawMosaicCircles(Graphics2D g2d, BufferedImage mosaicImage, int circleDiameter, int spacing, Settings settings) {
+        int mosaicWidth = mosaicImage.getWidth();
+        int mosaicHeight = mosaicImage.getHeight();
 
-	    for (int y = 0; y < mosaicHeight; y++) {
-	        for (int x = 0; x < mosaicWidth; x++) {
-	            int pixelColor = mosaicImage.getRGB(x, y);
-	            Color color = new Color(pixelColor);
+        for (int y = 0; y < mosaicHeight; y++) {
+            for (int x = 0; x < mosaicWidth; x++) {
+                int pixelColor = mosaicImage.getRGB(x, y);
+                Color color = new Color(pixelColor);
 
-	            int drawX = x * (circleDiameter + spacing);
-	            int drawY = y * (circleDiameter + spacing);
+                int drawX = x * (circleDiameter + spacing);
+                int drawY = y * (circleDiameter + spacing);
 
-	            g2d.setColor(color);
-	            g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
+                g2d.setColor(color);
+                g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
 
-	            int colorID = settings.getColorId(color);
-	            g2d.setColor(Color.BLACK);
-	            String idText = String.valueOf(colorID);
-	            int textWidth = g2d.getFontMetrics().stringWidth(idText);
-	            int textHeight = g2d.getFontMetrics().getHeight();
-	            g2d.drawString(idText, drawX + (circleDiameter - textWidth) / 2, drawY + (circleDiameter + textHeight) / 2 - 5);
-	        }
-	    }
-	}
+                // Display the color ID as a number on the circle
+                int colorID = settings.getColorId(color);
+                g2d.setColor(Color.BLACK);
+                String idText = String.valueOf(colorID);
+                int textWidth = g2d.getFontMetrics().stringWidth(idText);
+                int textHeight = g2d.getFontMetrics().getHeight();
+                g2d.drawString(idText, drawX + (circleDiameter - textWidth) / 2, drawY + (circleDiameter + textHeight) / 2 - 5);
+            }
+        }
+    }
 
 
 

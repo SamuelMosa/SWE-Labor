@@ -71,12 +71,11 @@ public class ImportImageController extends Controller {
 			}
 			Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
 			if (isLeftImage) {
-
 				getMyView().getLeftImagePlaceHolder().setIcon(new ImageIcon(dimg));
 			} else {
 				getMyView().getRightImagePlaceHolder().setIcon(new ImageIcon(dimg));
 			}
 		}
-		return fileName;
+		return directory + "/" + fileName;
 	}
 }
