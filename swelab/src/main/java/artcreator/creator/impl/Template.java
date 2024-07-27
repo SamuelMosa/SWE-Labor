@@ -3,13 +3,19 @@ package artcreator.creator.impl;
 import java.awt.image.BufferedImage;
 
 public class Template {
-	private BufferedImage image;
+	private BufferedImage leftImage;
+	private BufferedImage rightImage;
 	
-	public Template(BufferedImage image) {
-		this.image = image;
+	public Template(BufferedImage leftImage, BufferedImage rightImage) {
+		this.leftImage = leftImage;
+		this.rightImage = rightImage;
 	};
 	
-	public BufferedImage getImage( ) {
-		return image;
+	public BufferedImage getLeftImage() {
+		return leftImage;
+	}
+	
+	public BufferedImage getRightImage() {
+		return rightImage;
 	}
 }

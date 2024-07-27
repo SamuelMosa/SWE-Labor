@@ -14,7 +14,7 @@ import artcreator.statemachine.port.Subject;
 public class Controller implements ActionListener, Observer {
 
 	  private CreatorFrame myView;
-	  private Creator myModel;
+	  public Creator myModel;
 	  private Subject subject;
 
 

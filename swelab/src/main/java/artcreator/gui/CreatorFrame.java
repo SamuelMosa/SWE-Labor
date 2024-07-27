@@ -35,8 +35,11 @@ import artcreator.statemachine.port.State;
 import artcreator.statemachine.port.Subject;
 
 public class CreatorFrame extends JFrame implements Observer {
-
-    private Creator creator = CreatorFactory.FACTORY.creator();
+	
+	private String leftFilePath;
+	private String rightFilePath;
+	
+	private Creator creator = CreatorFactory.FACTORY.creator();
     private Subject subject = StateMachineFactory.FACTORY.subject();
     private Controller controller;
     
@@ -166,8 +169,11 @@ public class CreatorFrame extends JFrame implements Observer {
     
     private void createSettingsView() {
         clearContent();
-
+        
+        CreatorImpl impl = new CreatorImpl(null, null);
         this.panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        System.out.println("Left file path: " + leftFilePath +  ", Right file path" + rightFilePath);
+		importedImages = impl.importImage(leftFilePath, rightFilePath);
 
         // Titel
         JLabel titleLabel = new JLabel("Einstellungen für die Vorlage setzen");
@@ -296,20 +302,28 @@ public class CreatorFrame extends JFrame implements Observer {
     private void createGenerateTemplateView() {
         clearContent();
         CreatorImpl creatorImpl = new CreatorImpl(null, null);
-		BufferedImage[] images = creatorImpl.importImage("C:/Users/ninoo/git/SWE-Labor/swelab/istockphoto-1271087162-612x612.jpg", "C:/Users/ninoo/git/SWE-Labor/swelab/istockphoto-1271087162-612x612.jpg");
+		//BufferedImage[] images = creatorImpl.importImage(System.getProperty("user.dir") + "/istockphoto-1271087162-612x612.jpg", System.getProperty("user.dir") + "/b25lY21zOmFmM2U5NGMyLTMxNDgtNGFhMS05MmRlLTQwNjc2NGM0Mjg0YToyYjI2ODAyMy01MWYxLTRkMDktYTExMC1hNmI4ZTE4YzBjZmY=.jpg");
 
-        Template template = creatorImpl.generateTemplate(images[0], images[0], settings);
+		settings.insertColor("#FF0000");
+		settings.insertColor("#00FF00");
+		settings.insertColor("#0000FF");
+        Template template = creatorImpl.generateTemplate(importedImages[0], importedImages[1], settings);
 
         this.panel.setLayout(new BorderLayout());
-
         JLabel titleLabel = new JLabel("Vorlage - Linksbild", SwingConstants.CENTER);
         this.panel.add(titleLabel, BorderLayout.NORTH);
 
-        JLabel imageLabel = new JLabel();
-        imageLabel.setIcon(new ImageIcon(template.getImage()));
-//        imageLabel.setPreferredSize(new Dimension(400, 300));
-        imageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        this.panel.add(imageLabel, BorderLayout.CENTER);
+        System.out.println(template);
+        JLabel leftImageLabel = new JLabel();
+        leftImageLabel.setIcon(new ImageIcon(template.getLeftImage()));
+        leftImageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.panel.add(leftImageLabel, BorderLayout.CENTER);
+        
+        JLabel rightImageLabel = new JLabel();
+        rightImageLabel.setIcon(new ImageIcon(template.getRightImage()));
+        rightImageLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        this.panel.add(rightImageLabel, BorderLayout.PAGE_END);
+        
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
@@ -325,9 +339,9 @@ public class CreatorFrame extends JFrame implements Observer {
 
         this.panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        JButton switchToRightButton = new JButton("Zum Rechtsbild");
-        switchToRightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.panel.add(switchToRightButton, BorderLayout.CENTER);
+        //JButton switchToRightButton = new JButton("Zum Rechtsbild");
+        //switchToRightButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //this.panel.add(switchToRightButton, BorderLayout.CENTER);
 
         this.getContentPane().add(this.panel);
 
@@ -361,4 +375,21 @@ public class CreatorFrame extends JFrame implements Observer {
     public JLabel getRightImagePlaceHolder() {
     	return rightImagePlaceHolder;
     }
+    
+    public String getLeftFilePath() {
+		return leftFilePath;
+	}
+
+	public void setLeftFilePath(String leftFilePath) {
+		this.leftFilePath = leftFilePath;
+	}
+
+	public String getRightFilePath() {
+		return rightFilePath;
+	}
+
+	public void setRightFilePath(String rightFilePath) {
+		this.rightFilePath = rightFilePath;
+	}
+
 }

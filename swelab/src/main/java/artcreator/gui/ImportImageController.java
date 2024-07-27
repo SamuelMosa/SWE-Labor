@@ -46,9 +46,9 @@ public class ImportImageController extends Controller {
 		State currentState = stateMachine.getState();
 		if (currentState.equals(State.S.IMAGE_IMPORTED)) {
 			if (str.equals("Linkes Bild Importieren")) {
-				getMyModel().setLeftImageFilePath(openFileChooser(true));
+				getMyView().setLeftFilePath(openFileChooser(true));
 			} else {
-				getMyModel().setRightImageFilePath(openFileChooser(false));
+				getMyView().setRightFilePath(openFileChooser(false));
 			}
 		} else {
 			throw new IllegalArgumentException("wrong state!");
