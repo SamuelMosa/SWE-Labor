@@ -21,45 +21,49 @@ import artcreator.statemachine.port.Subject;
 
 public class AddColorController extends Controller {
 
-	  private JTextField textField;
-	    private JButton actionButton;
-	    private DefaultTableModel tableModel;
+	private JTextField textField;
+	private JButton actionButton;
+	private DefaultTableModel tableModel;
 
-	    public AddColorController(CreatorFrame view, Subject subject, Creator model, JTextField textField, JButton actionButton, DefaultTableModel tableModel) {
-	        super(view, subject, model);
-	        this.textField = textField;
-	        this.actionButton = actionButton;
-	        this.tableModel = tableModel;
-	        this.actionButton.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                handleActionButton();
-	            }
-	        });
-	    }
+	public AddColorController(CreatorFrame view, Subject subject, Creator model, JTextField textField,
+			JButton actionButton, DefaultTableModel tableModel) {
+		super(view, subject, model);
+		this.textField = textField;
+		this.actionButton = actionButton;
+		this.tableModel = tableModel;
+		this.actionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				handleActionButton();
+			}
+		});
+	}
 
-	    @Override
-	    public void update(State currentState) {
-	        // Implementation for update method if needed
-	    }
+	@Override
+	public void update(State currentState) {
+		// Implementation for update method if needed
+	}
 
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-	        // Delegate the action to the specific method
-	        handleActionButton();
-	    }
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
+		State currentState = stateMachine.getState();
+		if (currentState.equals(State.S.SETTINGS)) {
+			handleActionButton();
+		}
+	}
 
-	    private void handleActionButton() {
-	        String text = textField.getText();
-	        
-	        System.out.println("Text entered: " + text);
-	        
-	        int newColorID = tableModel.getRowCount() + 1; 
-	        tableModel.addRow(new Object[]{newColorID, text});
-	        
-	        getMyView().getSettings().insertColor(text);
-	        
-	        textField.setText("");
-	    }
+	private void handleActionButton() {
+		String text = textField.getText();
+
+		System.out.println("Text entered: " + text);
+
+		int newColorID = tableModel.getRowCount() + 1;
+		tableModel.addRow(new Object[] { newColorID, text });
+
+		getMyView().getSettings().insertColor(text);
+
+		textField.setText("");
+	}
 
 }

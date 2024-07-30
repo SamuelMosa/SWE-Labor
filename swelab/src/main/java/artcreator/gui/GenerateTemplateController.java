@@ -31,5 +31,4 @@ public class GenerateTemplateController extends Controller {
 			stateMachine.setState(State.S.TEMPLATE_GENERATED);
 		}
 	}
-
 }

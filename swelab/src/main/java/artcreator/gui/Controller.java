@@ -13,27 +13,27 @@ import artcreator.statemachine.port.Subject;
 
 public class Controller implements ActionListener, Observer {
 
-	  private CreatorFrame myView;
-	  public Creator myModel;
-	  private Subject subject;
+	private CreatorFrame myView;
+	public Creator myModel;
+	private Subject subject;
 
+	public Controller(CreatorFrame view, Subject subject, Creator model) {
+		this.setMyView(view);
+		this.setMyModel(model);
+		this.subject = subject;
+		this.subject.attach(this);
+	}
 
-	  public Controller(CreatorFrame view, Subject subject, Creator model) {
-	    this.setMyView(view);
-	    this.setMyModel(model);
-	    this.subject = subject;
-	    this.subject.attach(this); 
-	  }
+	public synchronized void actionPerformed(ActionEvent e) {
 
-	  public synchronized void actionPerformed(ActionEvent e) {
+		/* read input */
+		String str = (((JButton) e.getSource()).getText());
 
-	   /* read input */
-		String str = (((JButton)  e.getSource()).getText());
-		  
-	    CompletableFuture.runAsync(() -> this.getMyModel().sysop(str));
-	  }
-	  
-	  public void update(State newState) {/* modify controller or view if necessary */}
+		CompletableFuture.runAsync(() -> this.getMyModel().sysop(str));
+	}
+
+	public void update(State newState) {
+		/* modify controller or view if necessary */}
 
 	public CreatorFrame getMyView() {
 		return myView;
@@ -50,7 +50,5 @@ public class Controller implements ActionListener, Observer {
 	public void setMyModel(Creator myModel) {
 		this.myModel = myModel;
 	}
-	  
-	  
+
 }
-	

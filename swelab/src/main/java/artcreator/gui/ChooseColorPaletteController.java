@@ -19,17 +19,20 @@ public class ChooseColorPaletteController extends Controller {
 
 	public ChooseColorPaletteController(CreatorFrame view, Subject subject, Creator model) {
 		super(view, subject, model);
-		
+
 	}
 
 	@Override
 	public void update(State currentState) {
-		
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		getMyView().createColorPaletteView();
+		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
+		State currentState = stateMachine.getState();
+		if (currentState.equals(State.S.SETTINGS)) {
+			getMyView().createColorPaletteView();
+		}
 	}
-
 }

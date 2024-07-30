@@ -27,23 +27,21 @@ public class SaveTemplateController extends Controller {
 	public void actionPerformed(ActionEvent e) {
 		StateMachine stateMachine = StateMachineFactory.FACTORY.stateMachine();
 		State currentState = stateMachine.getState();
-	    CreatorImpl creatorImpl = new CreatorImpl(null, null);
-		System.out.println("SaveSettingsController");
+		CreatorImpl creatorImpl = new CreatorImpl(null, null);
 
 		if (currentState.equals(State.S.TEMPLATE_GENERATED)) {
 			System.out.println("SaveSettingsController");
 			String str = (((JButton) e.getSource()).getText());
 			if (str.equals("Linksbild speichern")) {
 				creatorImpl.saveTemplate(getMyView().getTemplate(), true);
-				System.out.println("SaveSettingsController");
-
 			} else if (str.equals("Rechtsbild speichern")) {
 				creatorImpl.saveTemplate(getMyView().getTemplate(), false);
-				System.out.println("SaveSettingsController");
-
 			} else {
 				throw new IllegalArgumentException("wrong state!");
 			}
 		}
 	}
 }
+
+		
+	
