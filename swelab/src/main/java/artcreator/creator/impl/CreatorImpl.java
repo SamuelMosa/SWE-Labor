@@ -34,7 +34,6 @@ public class CreatorImpl {
 
 	public void sysop(String str) {
 		System.out.println(str);
-
 	}
 
 	public BufferedImage[] importImage(String filePathFirstImage, String filePathSecondImage) {
@@ -139,8 +138,26 @@ public class CreatorImpl {
         return new Template(leftCanvas, rightCanvas); // Return a suitable Template object instead of null
     }
 
-    public static void saveTemplate(Template template) {
-        // TODO Auto-generated method stub
+    public static void saveTemplate(Template template, boolean isLeftImage) {
+        BufferedImage image = isLeftImage ? template.getLeftImage() : template.getRightImage();
+        String filePath = System.getProperty("user.dir");
+        
+        // Get the user's home directory and the Downloads folder
+//        String userHome = System.getProperty("user.home");
+//        String downloadPath = userHome + File.separator + "Downloads";
+        
+        // Create the file name based on the image type
+        String fileName = isLeftImage ? "Linksbild.png" : "Rechtsbild.png";
+        File outputFile = new File(filePath, fileName);
+        
+        try {
+            // Write the image to the file as a PNG
+            ImageIO.write(image, "png", outputFile);
+            System.out.println("Image saved to " + outputFile.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Error saving image: " + e.getMessage());
+        }
     }
 
     private static BufferedImage createMosaicImage(BufferedImage originalImage, int mosaicWidth, int mosaicHeight, List<Color> colorList) {
@@ -222,62 +239,6 @@ public class CreatorImpl {
             }
         }
     }
-
-
-
-
-//	private static void drawMosaicCircles(Graphics2D g2d, BufferedImage mosaicImage, int circleDiameter, int spacing,
-//			Settings settings) {
-//		int mosaicWidth = mosaicImage.getWidth();
-//		int mosaicHeight = mosaicImage.getHeight();
-//
-//		for (int y = 0; y < mosaicHeight; y++) {
-//			for (int x = 0; x < mosaicWidth; x++) {
-//				int pixelColor = mosaicImage.getRGB(x, y);
-//				Color color = new Color(pixelColor);
-//
-//				int drawX = x * (circleDiameter + spacing);
-//				int drawY = y * (circleDiameter + spacing);
-//
-//				g2d.setColor(color);
-//				g2d.fillOval(drawX, drawY, circleDiameter, circleDiameter);
-//
-//				int colorID = settings.getColorId(color);
-//				g2d.setColor(Color.BLACK);
-//				String idText = String.valueOf(colorID);
-//				int textWidth = g2d.getFontMetrics().stringWidth(idText);
-//				int textHeight = g2d.getFontMetrics().getHeight();
-//				g2d.drawString(idText, drawX + (circleDiameter - textWidth) / 2,
-//						drawY + (circleDiameter + textHeight) / 2 - 5);
-//			}
-//		}
-//	}
-//
-//	private static void displayMosaicCircles(BufferedImage mosaicImage, int circleDiameter, int spacing,
-//			Settings setting) {
-//		// Calculate the size needed for the JFrame
-//		int mosaicWidth = mosaicImage.getWidth();
-//		int mosaicHeight = mosaicImage.getHeight();
-//		int totalWidth = mosaicWidth * (circleDiameter + spacing) - spacing;
-//		int totalHeight = mosaicHeight * (circleDiameter + spacing) - spacing;
-//
-//		// Create a custom JPanel to display the image with circles
-//		JPanel panel = new JPanel() {
-//			@Override
-//			protected void paintComponent(Graphics g) {
-//				super.paintComponent(g);
-//				Graphics g2d = drawMosaicCircles(g, mosaicImage, circleDiameter, spacing, setting);
-//			}
-//		};
-//
-//		// Create a JFrame to hold the JPanel
-//		JFrame frame = new JFrame();
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		frame.add(panel);
-//		frame.setSize(totalWidth, totalHeight);
-//		frame.setVisible(true);
-//
-//	}
 
 	public String getLeftImageFilePath() {
 		return leftImageFilePath;

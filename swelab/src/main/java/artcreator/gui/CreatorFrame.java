@@ -62,6 +62,7 @@ public class CreatorFrame extends JFrame implements Observer {
 	private JTextField numberToothpicksTextField;
 	private Settings settings = new Settings();
 	private BufferedImage[] importedImages;
+	private Template template;
 
 	public CreatorFrame() {
 		super("ArtCreator");
@@ -419,12 +420,12 @@ public class CreatorFrame extends JFrame implements Observer {
 
 	private void createGenerateTemplateView() {
 		clearContent();
-		
+
 		int prefImgSize = 600;
 
 		CreatorImpl creatorImpl = new CreatorImpl(null, null);
-		
-		Template template = creatorImpl.generateTemplate(importedImages[0], importedImages[1], settings);
+		template = creatorImpl.generateTemplate(importedImages[0], importedImages[1], settings);
+		SaveTemplateController saveTemplateController = new SaveTemplateController(this, subject, creator);
 
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -445,29 +446,39 @@ public class CreatorFrame extends JFrame implements Observer {
 		imgGbc.gridy = 0;
 		imgGbc.anchor = GridBagConstraints.CENTER;
 
-		
 		Image scaledLeftImage = template.getLeftImage().getScaledInstance(prefImgSize, prefImgSize, Image.SCALE_SMOOTH);
-		Image scaledRightImage = template.getRightImage().getScaledInstance(prefImgSize, prefImgSize, Image.SCALE_SMOOTH);
-		
+		Image scaledRightImage = template.getRightImage().getScaledInstance(prefImgSize, prefImgSize,
+				Image.SCALE_SMOOTH);
+
 		JLabel leftImageLabel = new JLabel("Linksbild");
 		imagePanel.add(leftImageLabel, imgGbc);
 		imgGbc.gridy++;
 		JLabel leftImage = new JLabel();
-		leftImageLabel.setIcon(new ImageIcon(scaledLeftImage));
+		leftImage.setIcon(new ImageIcon(scaledLeftImage));
 		imagePanel.add(leftImage, imgGbc);
 		leftImage.setPreferredSize(new Dimension(prefImgSize, prefImgSize));
-		
+
+		imgGbc.gridy++;
+		JButton saveLeftImageButton = new JButton("Linksbild speichern");
+		imagePanel.add(saveLeftImageButton, imgGbc);
+		saveLeftImageButton.addActionListener(saveTemplateController);
 
 		imgGbc.gridx++;
 		imgGbc.gridy = 0;
 		JLabel rightImageLabel = new JLabel("Rechtsbild");
-		rightImageLabel.setIcon(new ImageIcon(scaledRightImage));
 		imagePanel.add(rightImageLabel, imgGbc);
 		imgGbc.gridy++;
 		JLabel rightImage = new JLabel();
+		rightImage.setIcon(new ImageIcon(scaledRightImage));
 		imagePanel.add(rightImage, imgGbc);
 		rightImage.setPreferredSize(new Dimension(prefImgSize, prefImgSize));
-		
+
+		imgGbc.gridy++;
+		JButton saveRightImageButton = new JButton("Rechtsbild speichern");
+		imagePanel.add(saveRightImageButton, imgGbc);
+		saveRightImageButton.addActionListener(saveTemplateController);
+
+
 		panel.add(imagePanel, gbc);
 
 		getContentPane().add(panel);
@@ -591,6 +602,10 @@ public class CreatorFrame extends JFrame implements Observer {
 
 	public void setRightFilePath(String rightFilePath) {
 		this.rightFilePath = rightFilePath;
+	}
+
+	public Template getTemplate() {
+		return template;
 	}
 
 }
